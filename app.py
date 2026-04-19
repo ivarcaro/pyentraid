@@ -19,8 +19,8 @@ def index():
         </html>
     '''
 
-@app.route('/signin-oidc')
-def signin-oidc():
+@app.route('/signin_oidc')
+def signin_oidc():
         return f'''
             <html>
                 <body>
