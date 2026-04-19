@@ -24,7 +24,6 @@ def signin_oidc():
         return f'''
             <html>
                 <body>
-                    <h1>Hola, {name}!</h1>
                     <p>Recurso signin-oidc.</p>
                     <a href="{url_for('index')}">Volver atrás</a>
                 </body>
