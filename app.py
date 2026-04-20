@@ -55,7 +55,6 @@ def hello():
             <html>
                 <body>
                     <h1>El valor recibido es {name}!</h1>
-                    <p>El parámetro se ha recibido correctamente.</p>
                     <a href="{url_for('index')}">Volver atrás</a>
                 </body>
             </html>
