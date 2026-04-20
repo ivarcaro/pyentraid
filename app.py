@@ -1,16 +1,30 @@
 import os
 from flask import Flask, redirect, request, send_from_directory, url_for
+from msal_flask_auth import FlaskAuth
 
 app = Flask(__name__)
 
+app.config.update(
+    SECRET_KEY=os.getenv("SECRET_KEY"), # Una clave aleatoria
+    MSAL_CLIENT_ID=os.getenv("CLIENT_ID"),
+    MSAL_CLIENT_SECRET=os.getenv("CLIENT_SECRET"),
+    MSAL_AUTHORITY="https://login.microsoftonline.com/" + os.getenv("TENANT_ID"),
+    MSAL_REDIRECT_PATH="/signin-oidc"
+)
+
+auth = FlaskAuth(app)
+
 @app.route('/')
 def index():
-    print('Request for index page received')
     # Devolvemos un formulario HTML básico como string
-    return '''
+
+    user = auth.get_user()
+    
+    return f'''
         <html>
             <body>
-                <h2>Introduce tu nombre</h2>
+                <h1>Bienvenido {user}!</h1>
+                <h2>Introduce tu valor</h2>
                 <form action="/hello" method="post">
                     <input type="text" name="name">
                     <input type="submit" value="Enviar">
@@ -19,35 +33,34 @@ def index():
         </html>
     '''
 
-@app.route('/signin_oidc')
-def signin_oidc():
-        return f'''
-            <html>
-                <body>
-                    <p>Recurso signin-oidc.</p>
-                    <a href="{url_for('index')}">Volver atrás</a>
-                </body>
-            </html>
-        '''
+# @app.route('/signin-oidc') # no hace falta, lo gestion la biblioteca msal-flask-auth
+# def signin_oidc():
+#         return f'''
+#             <html>
+#                 <body>
+#                     <p>Recurso signin-oidc.</p>
+#                     <a href="{url_for('index')}">Volver atrás</a>
+#                 </body>
+#             </html>
+#         '''
 
 @app.route('/hello', methods=['POST'])
 def hello():
     name = request.form.get('name')
 
     if name:
-        print('Request for hello page received with name=%s' % name)
+        print('El valor recibido es %s' % name)
         # Devolvemos el parámetro dentro de un encabezado <h1> y un párrafo <p>
         return f'''
             <html>
                 <body>
-                    <h1>Hola, {name}!</h1>
-                    <p>Este parámetro se ha recibido correctamente sin usar ficheros externos.</p>
+                    <h1>El valor recibido es {name}!</h1>
+                    <p>El parámetro se ha recibido correctamente.</p>
                     <a href="{url_for('index')}">Volver atrás</a>
                 </body>
             </html>
         '''
     else:
-        print('Request for hello page received with no name or blank name -- redirecting')
         return redirect(url_for('index'))
 
 if __name__ == '__main__':
