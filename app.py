@@ -5,7 +5,7 @@ from msal_flask_auth import FlaskAuth
 app = Flask(__name__)
 
 app.config.update(
-    SECRET_KEY=os.getenv("SECRET_KEY"), # Una clave aleatoria
+    SECRET_KEY=os.getenv("SECRET_KEY"),
     MSAL_CLIENT_ID=os.getenv("CLIENT_ID"),
     MSAL_CLIENT_SECRET=os.getenv("CLIENT_SECRET"),
     MSAL_AUTHORITY="https://login.microsoftonline.com/" + os.getenv("TENANT_ID"),
